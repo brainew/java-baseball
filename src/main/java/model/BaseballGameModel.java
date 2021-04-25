@@ -2,9 +2,9 @@ package model;
 
 import java.util.ArrayList;
 
-public class BaseballGame {
-	private ArrayList<Integer> defaultNumbers;
-	private ArrayList<Integer> userInputNumbers;
+public class BaseballGameModel {
+	private ArrayList<Integer> defaultNumbers = new ArrayList<>();
+	private ArrayList<Integer> userInputNumbers = new ArrayList<>();
 	private int strike = 0;
 	private int ball = 0;
 
@@ -12,8 +12,8 @@ public class BaseballGame {
 		return defaultNumbers;
 	}
 
-	public void setDefaultNumbers(ArrayList<Integer> defaultNumbers) {
-		this.defaultNumbers = defaultNumbers;
+	public void addDefaultNumbers(int inputNumber) {
+		this.defaultNumbers.add(inputNumber);
 	}
 
 	public ArrayList<Integer> getUserInputNumbers() {
