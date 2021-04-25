@@ -3,8 +3,8 @@ import service.BaseballGameService;
 import service.impl.BaseballGameServiceImpl;
 
 public class BaseballGame {
-	private static BaseballGameModel baseballGame = new BaseballGameModel();
-	private static BaseballGameService baseballGameService = new BaseballGameServiceImpl(baseballGame);
+	static BaseballGameModel baseballGame = new BaseballGameModel();
+	static BaseballGameService baseballGameService = new BaseballGameServiceImpl(baseballGame);
 
 	public static void main(String[] args) {
 		startGame();
@@ -12,5 +12,10 @@ public class BaseballGame {
 
 	private static void startGame() {
 		baseballGameService.startGame();
+		baseballGameService.getInputNumber();
+	}
+
+	private static void restartGame() {
+
 	}
 }
