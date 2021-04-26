@@ -1,33 +1,106 @@
 package service;
 
-import java.util.ArrayList;
+import exception.CustomException;
+import model.Batter;
+import model.Game;
+import model.Pitcher;
+import utils.CompareUtils;
+import utils.NumberUtils;
 
-public interface BaseballGameService {
-	void startGame();
+public class BaseballGameService {
+	private Batter batter;
+	private BatterAction batterAction = new BatterAction();
 
-	void createRandomNumbers();
+	private Pitcher pitcher;
+	private PitcherAction pitcherAction = new PitcherAction();
 
-	void getInputNumber();
+	private Game game = new Game();
 
-	ArrayList<Integer> splitStringToArray(String inputNumber);
+	public BaseballGameService(Pitcher pitcher, Batter batter) {
+		this.pitcher = pitcher;
+		this.batter = batter;
+	}
 
-	Integer convertStringToInteger(char input);
+	private void ready() {
+		pitcherAction.windUp(pitcher);
+	}
 
-	void validInputNumbers(String inputNumber, int checkSize) throws Exception;
+	private void pitching() throws CustomException.InvalidNumberOfRangeException, CustomException.InvalidNumberFormatException, CustomException.InvalidNumberOfSizeException {
+		batterAction.swing(batter);
+	}
 
-	void checkRangeByInputNumber(int inputNumber, int startRange, int endRange) throws Exception;
+	private void setScore() {
+		batter.setBall(CompareUtils.compareByEquals(pitcher.getPitching(), batter.getSwing()));
+		batter.setStrike(CompareUtils.compareByEqualsPosition(pitcher.getPitching(), batter.getSwing()));
+	}
 
-	void checkBallStrike();
+	private void presentScore() {
+		batter.setChance(batter.getStrike() != 3);
 
-	int isBall(ArrayList<Integer> defaultNumbers, ArrayList<Integer> inputNumbers);
+		if (batter.getBall() == 0 && batter.getStrike() == 0) {
+			System.out.println("낫싱");
+			return;
+		}
 
-	int isStrike(ArrayList<Integer> defaultNumbers, ArrayList<Integer> inputNumbers);
+		System.out.println((batter.showStrike() + " " + batter.showBall()).trim());
+	}
 
-	void startRetryGame();
+	private void showGameResult() throws CustomException.InvalidNumberFormatException, CustomException.InvalidNumberOfSizeException, CustomException.InvalidNumberOfRangeException {
+		if (!batter.isChance()) {
+			System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료");
+			System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
+			game.setRestartValue(NumberUtils.readLine(1).get(0));
+			restartGame();
+			return;
+		}
 
-	void presentGameResult();
+		oneMoreChance();
+	}
 
-	void clearGame() throws Exception;
+	private void oneMoreChance() {
+		gameStartCycleWithoutReady();
+	}
 
-	void checkRestartGame(String inputNumber);
+	private void restartGame() {
+		if (game.getRestartValue() == 2) {
+			return;
+		}
+
+		batter = new Batter();
+		pitcher = new Pitcher();
+
+		gameStartCycleDefault();
+	}
+
+	private void gameStartCycleDefault() {
+		try {
+			ready();
+			pitching();
+			setScore();
+			presentScore();
+			showGameResult();
+		} catch (CustomException.InvalidNumberOfRangeException | CustomException.InvalidNumberFormatException | CustomException.InvalidNumberOfSizeException e) {
+			gameStartCycleWithExceptionMessage(e);
+		}
+	}
+
+	private void gameStartCycleWithoutReady() {
+		try {
+			pitching();
+			setScore();
+			presentScore();
+			showGameResult();
+		} catch (CustomException.InvalidNumberOfRangeException | CustomException.InvalidNumberFormatException | CustomException.InvalidNumberOfSizeException e) {
+			gameStartCycleWithExceptionMessage(e);
+		}
+	}
+
+	private void gameStartCycleWithExceptionMessage(Exception e) {
+		System.out.println(e.getMessage());
+		gameStartCycleWithoutReady();
+	}
+
+	public void startGame() {
+		gameStartCycleDefault();
+	}
 }
