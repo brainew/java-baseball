@@ -1,6 +1,7 @@
 package service.impl;
 
 import model.BaseballGameModel;
+import model.GameResult;
 import service.BaseballGameService;
 
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 	@Override
 	public void startGame() {
 		createRandomNumbers();
-		System.out.println("숫자를입력해주세요: ");
 		getInputNumber();
 		checkBallStrike();
 	}
@@ -36,14 +36,12 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 
 	@Override
 	public void getInputNumber() {
-		Scanner scanner = new Scanner(System.in);
-		String inputNumber = scanner.nextLine();
 		try {
-			validInputNumbers(inputNumber);
+			String inputNumber = inputNumberByLine(GameResult.NONE);
+			validInputNumbers(inputNumber, 3);
 			baseballGame.setUserInputNumbers(splitStringToArray(inputNumber));
 		} catch (Exception e) {
-			System.out.println("ERROR: 자리수와 숫자를 확인하시고 다시 입력해주세요");
-			getInputNumber();
+			validExceptionRetry();
 		}
 	}
 
@@ -63,18 +61,20 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 	}
 
 	@Override
-	public void validInputNumbers(String inputNumber) throws Exception {
-		if (inputNumber.length() != 3) {
+	public void validInputNumbers(String inputNumber, int checkSize) throws Exception {
+		int endRange = (checkSize == 3) ? 9 : 2;
+
+		if (inputNumber.length() != checkSize) {
 			throw new Exception("wrong input number size");
 		}
 
 		for (char value : inputNumber.toCharArray()) {
-			checkRangeByInputNumber(Integer.parseInt(String.valueOf(value)));
+			checkRangeByInputNumber(Integer.parseInt(String.valueOf(value)), 1, endRange);
 		}
 	}
 
 	@Override
-	public void checkRangeByInputNumber(int inputNumber) throws Exception {
+	public void checkRangeByInputNumber(int inputNumber, int startRange, int endRange) throws Exception {
 		if (inputNumber < 1 || inputNumber > 9) {
 			throw new Exception("wrong input number range");
 		}
@@ -102,10 +102,25 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 
 	@Override
 	public void clearGame() {
-		System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임종료");
-		System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
-		Scanner scanner = new Scanner(System.in);
-		String inputNumber = scanner.nextLine();
+		try {
+			System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임종료");
+			String inputNumber = inputNumberByLine(GameResult.DONE);
+			validInputNumbers(inputNumber, 1);
+			checkRestartGame(inputNumber);
+		} catch (Exception e) {
+			validExceptionRetry();
+		}
+	}
+
+	@Override
+	public void checkRestartGame(String inputNumber) {
+		if ("2".equals(inputNumber)) {
+			return;
+		}
+
+		baseballGame.setDefaultNumbers(new ArrayList<>());
+		baseballGame.setUserInputNumbers(new ArrayList<>());
+		startGame();
 	}
 
 	@Override
@@ -134,7 +149,6 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 
 	@Override
 	public void startRetryGame() {
-		System.out.println("숫자를입력해주세요: ");
 		getInputNumber();
 		checkBallStrike();
 	}
@@ -150,5 +164,16 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 
 	private void removeIndex(ArrayList<Integer> array, int removeIndex) {
 		array.remove(removeIndex);
+	}
+
+	private String inputNumberByLine(GameResult gameResult) {
+		System.out.println(gameResult.getMessage());
+		Scanner scanner = new Scanner(System.in);
+		return scanner.nextLine();
+	}
+
+	private void validExceptionRetry() {
+		System.out.println("ERROR: 자리수와 숫자를 확인하시고 다시 입력해주세요");
+		getInputNumber();
 	}
 }

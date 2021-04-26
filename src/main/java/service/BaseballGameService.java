@@ -13,9 +13,9 @@ public interface BaseballGameService {
 
 	Integer convertStringToInteger(char input);
 
-	void validInputNumbers(String inputNumber) throws Exception;
+	void validInputNumbers(String inputNumber, int checkSize) throws Exception;
 
-	void checkRangeByInputNumber(int inputNumber) throws Exception;
+	void checkRangeByInputNumber(int inputNumber, int startRange, int endRange) throws Exception;
 
 	void checkBallStrike();
 
@@ -27,5 +27,7 @@ public interface BaseballGameService {
 
 	void presentGameResult();
 
-	void clearGame();
+	void clearGame() throws Exception;
+
+	void checkRestartGame(String inputNumber);
 }

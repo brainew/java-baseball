@@ -13,8 +13,4 @@ public class BaseballGame {
 	private static void startGame() {
 		baseballGameService.startGame();
 	}
-
-	private static void restartGame() {
-
-	}
 }

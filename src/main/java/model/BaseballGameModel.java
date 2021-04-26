@@ -7,6 +7,19 @@ public class BaseballGameModel {
 	private ArrayList<Integer> userInputNumbers = new ArrayList<>();
 	private int strike = 0;
 	private int ball = 0;
+	private int restartFlag = 0;
+
+	public void setDefaultNumbers(ArrayList<Integer> defaultNumbers) {
+		this.defaultNumbers = defaultNumbers;
+	}
+
+	public int getRestartFlag() {
+		return restartFlag;
+	}
+
+	public void setRestartFlag(int restartFlag) {
+		this.restartFlag = restartFlag;
+	}
 
 	public ArrayList<Integer> getDefaultNumbers() {
 		return defaultNumbers;
