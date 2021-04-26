@@ -1,13 +1,13 @@
 package service.impl;
 
-import model.BaseballGameModel;
-import model.GameResult;
-import service.BaseballGameService;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Scanner;
+
+import model.BaseballGameModel;
+import model.GameResult;
+import service.BaseballGameService;
 
 public class BaseballGameServiceImpl implements BaseballGameService {
 	private BaseballGameModel baseballGame;
@@ -140,7 +140,7 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 	public int isStrike(ArrayList<Integer> defaultNumbers, ArrayList<Integer> inputNumbers) {
 		int strikeCount = 0;
 
-		for (int defaultNumber: defaultNumbers) {
+		for (int defaultNumber : defaultNumbers) {
 			strikeCount += (inputNumbers.get(defaultNumbers.indexOf(defaultNumber)).equals(defaultNumber)) ? 1 : 0;
 		}
 
