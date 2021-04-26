@@ -16,7 +16,5 @@ public class PitcherAction {
 			pitching.add(pitcher.getPitch().get(tempNumber));
 			ArrayUtils.removeIndex(pitcher.getPitch(), tempNumber);
 		}
-
-		System.out.println(pitcher.getPitching());
 	}
 }
