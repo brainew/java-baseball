@@ -22,4 +22,10 @@ public interface BaseballGameService {
 	int isBall(ArrayList<Integer> defaultNumbers, ArrayList<Integer> inputNumbers);
 
 	int isStrike(ArrayList<Integer> defaultNumbers, ArrayList<Integer> inputNumbers);
+
+	void startRetryGame();
+
+	void presentGameResult();
+
+	void clearGame();
 }

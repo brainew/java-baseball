@@ -19,6 +19,8 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 	public void startGame() {
 		createRandomNumbers();
 		System.out.println("숫자를입력해주세요: ");
+		getInputNumber();
+		checkBallStrike();
 	}
 
 	@Override
@@ -86,23 +88,20 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 		presentGameResult();
 	}
 
-	void presentGameResult() {
+	@Override
+	public void presentGameResult() {
 		System.out.println(baseballGame.getStrike() + " 스트라이크 " + baseballGame.getBall() + "볼");
 
 		if (baseballGame.getStrike() != 3) {
-			retryGame();
+			startRetryGame();
 			return;
 		}
 
 		clearGame();
 	}
 
-	void retryGame() {
-		System.out.println("숫자를입력해주세요: ");
-		getInputNumber();
-	}
-
-	void clearGame() {
+	@Override
+	public void clearGame() {
 		System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임종료");
 		System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
 		Scanner scanner = new Scanner(System.in);
@@ -131,6 +130,13 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 		}
 
 		return strikeCount;
+	}
+
+	@Override
+	public void startRetryGame() {
+		System.out.println("숫자를입력해주세요: ");
+		getInputNumber();
+		checkBallStrike();
 	}
 
 	private ArrayList<Integer> arrayDeepCopy(ArrayList<Integer> baseArray, int removeIndex) {
