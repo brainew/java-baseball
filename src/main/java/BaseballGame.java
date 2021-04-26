@@ -13,6 +13,7 @@ public class BaseballGame {
 	private static void startGame() {
 		baseballGameService.startGame();
 		baseballGameService.getInputNumber();
+		baseballGameService.checkBallStrike();
 	}
 
 	private static void restartGame() {

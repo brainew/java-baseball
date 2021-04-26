@@ -19,7 +19,7 @@ public interface BaseballGameService {
 
 	void checkBallStrike();
 
-	int isBall();
+	int isBall(ArrayList<Integer> defaultNumbers, ArrayList<Integer> inputNumbers);
 
-	int isStrike();
+	int isStrike(ArrayList<Integer> defaultNumbers, ArrayList<Integer> inputNumbers);
 }

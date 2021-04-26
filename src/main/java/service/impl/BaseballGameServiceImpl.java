@@ -4,6 +4,7 @@ import model.BaseballGameModel;
 import service.BaseballGameService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Scanner;
 
@@ -79,16 +80,69 @@ public class BaseballGameServiceImpl implements BaseballGameService {
 
 	@Override
 	public void checkBallStrike() {
+		baseballGame.setBall(isBall(baseballGame.getDefaultNumbers(), baseballGame.getUserInputNumbers()));
+		baseballGame.setStrike(isStrike(baseballGame.getDefaultNumbers(), baseballGame.getUserInputNumbers()));
 
+		presentGameResult();
+	}
+
+	void presentGameResult() {
+		System.out.println(baseballGame.getStrike() + " 스트라이크 " + baseballGame.getBall() + "볼");
+
+		if (baseballGame.getStrike() != 3) {
+			retryGame();
+			return;
+		}
+
+		clearGame();
+	}
+
+	void retryGame() {
+		System.out.println("숫자를입력해주세요: ");
+		getInputNumber();
+	}
+
+	void clearGame() {
+		System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임종료");
+		System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
+		Scanner scanner = new Scanner(System.in);
+		String inputNumber = scanner.nextLine();
 	}
 
 	@Override
-	public int isBall() {
-		return 0;
+	public int isBall(ArrayList<Integer> defaultNumbers, ArrayList<Integer> inputNumbers) {
+		int size = defaultNumbers.size();
+		int ballCount = 0;
+
+		for (int i = 0; i < size; i++) {
+			ArrayList<Integer> copyArray = arrayDeepCopy(defaultNumbers, i);
+			ballCount += (copyArray.contains(inputNumbers.get(i))) ? 1 : 0;
+		}
+
+		return ballCount;
 	}
 
 	@Override
-	public int isStrike() {
-		return 0;
+	public int isStrike(ArrayList<Integer> defaultNumbers, ArrayList<Integer> inputNumbers) {
+		int strikeCount = 0;
+
+		for (int defaultNumber: defaultNumbers) {
+			strikeCount += (inputNumbers.get(defaultNumbers.indexOf(defaultNumber)).equals(defaultNumber)) ? 1 : 0;
+		}
+
+		return strikeCount;
+	}
+
+	private ArrayList<Integer> arrayDeepCopy(ArrayList<Integer> baseArray, int removeIndex) {
+		Integer[] copyArray = new Integer[baseArray.size()];
+		System.arraycopy(baseArray.toArray(), 0, copyArray, 0, baseArray.size());
+		ArrayList<Integer> resultArray = new ArrayList<>(Arrays.asList(copyArray));
+		removeIndex(resultArray, removeIndex);
+
+		return resultArray;
+	}
+
+	private void removeIndex(ArrayList<Integer> array, int removeIndex) {
+		array.remove(removeIndex);
 	}
 }
