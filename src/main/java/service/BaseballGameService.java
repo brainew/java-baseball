@@ -1,6 +1,8 @@
 package service;
 
-import exception.CustomException;
+import exception.CustomException.InvalidNumberFormatException;
+import exception.CustomException.InvalidNumberOfRangeException;
+import exception.CustomException.InvalidNumberOfSizeException;
 import model.Batter;
 import model.Game;
 import model.Pitcher;
@@ -25,7 +27,10 @@ public class BaseballGameService {
 		pitcherAction.windUp(pitcher);
 	}
 
-	private void pitching() throws CustomException.InvalidNumberOfRangeException, CustomException.InvalidNumberFormatException, CustomException.InvalidNumberOfSizeException {
+	private void pitching() throws
+		InvalidNumberOfRangeException,
+		InvalidNumberFormatException,
+		InvalidNumberOfSizeException {
 		batterAction.swing(batter);
 	}
 
@@ -45,10 +50,10 @@ public class BaseballGameService {
 		System.out.println((batter.showStrike() + " " + batter.showBall()).trim());
 	}
 
-	private void showGameResult() throws CustomException.InvalidNumberFormatException, CustomException.InvalidNumberOfSizeException, CustomException.InvalidNumberOfRangeException {
+	private void showGameResult()
+		throws InvalidNumberFormatException, InvalidNumberOfSizeException, InvalidNumberOfRangeException {
 		if (!batter.isChance()) {
-			System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료");
-			System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
+			System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료\n게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
 			game.setRestartValue(NumberUtils.readLine(1).get(0));
 			restartGame();
 			return;
@@ -79,8 +84,9 @@ public class BaseballGameService {
 			setScore();
 			presentScore();
 			showGameResult();
-		} catch (CustomException.InvalidNumberOfRangeException | CustomException.InvalidNumberFormatException | CustomException.InvalidNumberOfSizeException e) {
-			gameStartCycleWithExceptionMessage(e);
+		} catch (InvalidNumberOfRangeException
+			| InvalidNumberFormatException | InvalidNumberOfSizeException exception) {
+			gameStartCycleWithExceptionMessage(exception);
 		}
 	}
 
@@ -90,13 +96,14 @@ public class BaseballGameService {
 			setScore();
 			presentScore();
 			showGameResult();
-		} catch (CustomException.InvalidNumberOfRangeException | CustomException.InvalidNumberFormatException | CustomException.InvalidNumberOfSizeException e) {
-			gameStartCycleWithExceptionMessage(e);
+		} catch (InvalidNumberOfRangeException
+			| InvalidNumberFormatException | InvalidNumberOfSizeException exception) {
+			gameStartCycleWithExceptionMessage(exception);
 		}
 	}
 
-	private void gameStartCycleWithExceptionMessage(Exception e) {
-		System.out.println(e.getMessage());
+	private void gameStartCycleWithExceptionMessage(Exception exception) {
+		System.out.println(exception.getMessage());
 		gameStartCycleWithoutReady();
 	}
 
