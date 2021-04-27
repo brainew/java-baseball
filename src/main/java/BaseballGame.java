@@ -1,16 +1,18 @@
-import model.BaseballGameModel;
+import exception.CustomException;
+import model.Batter;
+import model.Pitcher;
 import service.BaseballGameService;
-import service.impl.BaseballGameServiceImpl;
 
 public class BaseballGame {
-	static BaseballGameModel baseballGame = new BaseballGameModel();
-	static BaseballGameService baseballGameService = new BaseballGameServiceImpl(baseballGame);
+	private static Pitcher pitcher = new Pitcher();
+	private static Batter batter = new Batter();
+	private static BaseballGameService baseballGameService = new BaseballGameService(pitcher, batter);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws CustomException.InvalidNumberException {
 		startGame();
 	}
 
-	private static void startGame() {
+	private static void startGame() throws CustomException.InvalidNumberException {
 		baseballGameService.startGame();
 	}
 }
