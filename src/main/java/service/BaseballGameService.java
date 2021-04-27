@@ -1,13 +1,12 @@
 package service;
 
-import exception.CustomException.InvalidNumberFormatException;
-import exception.CustomException.InvalidNumberOfRangeException;
-import exception.CustomException.InvalidNumberOfSizeException;
+import exception.CustomException;
 import model.Batter;
 import model.Game;
 import model.Pitcher;
 import utils.CompareUtils;
 import utils.NumberUtils;
+import utils.RegxUtils;
 
 public class BaseballGameService {
 	private Batter batter;
@@ -27,10 +26,7 @@ public class BaseballGameService {
 		pitcherAction.windUp(pitcher);
 	}
 
-	private void pitching() throws
-		InvalidNumberOfRangeException,
-		InvalidNumberFormatException,
-		InvalidNumberOfSizeException {
+	private void pitching() throws CustomException.InvalidNumberException {
 		batterAction.swing(batter);
 	}
 
@@ -50,8 +46,7 @@ public class BaseballGameService {
 		System.out.println((batter.showStrike() + " " + batter.showBall()).trim());
 	}
 
-	private void showGameResult()
-		throws InvalidNumberFormatException, InvalidNumberOfSizeException, InvalidNumberOfRangeException {
+	private void showGameResult() throws CustomException.InvalidNumberException {
 		if (!batter.isChance()) {
 			System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료\n게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
 			game.setRestartValue(NumberUtils.readLine(1).get(0));
@@ -62,11 +57,20 @@ public class BaseballGameService {
 		oneMoreChance();
 	}
 
-	private void oneMoreChance() {
+	private void oneMoreChance() throws CustomException.InvalidNumberException {
 		gameStartCycleWithoutReady();
 	}
 
-	private void restartGame() {
+	private void restartGame() throws CustomException.InvalidNumberException {
+		if (!RegxUtils.continueGameAnswerRegx(String.valueOf(game.getRestartValue()))) {
+			showGameResult();
+			return;
+		}
+
+		checkResult();
+	}
+
+	private void checkResult() throws CustomException.InvalidNumberException {
 		if (game.getRestartValue() == 2) {
 			return;
 		}
@@ -77,37 +81,35 @@ public class BaseballGameService {
 		gameStartCycleDefault();
 	}
 
-	private void gameStartCycleDefault() {
+	private void gameStartCycleDefault() throws CustomException.InvalidNumberException {
 		try {
 			ready();
 			pitching();
 			setScore();
 			presentScore();
 			showGameResult();
-		} catch (InvalidNumberOfRangeException
-			| InvalidNumberFormatException | InvalidNumberOfSizeException exception) {
+		} catch (CustomException.InvalidNumberException exception) {
 			gameStartCycleWithExceptionMessage(exception);
 		}
 	}
 
-	private void gameStartCycleWithoutReady() {
+	private void gameStartCycleWithoutReady() throws CustomException.InvalidNumberException {
 		try {
 			pitching();
 			setScore();
 			presentScore();
 			showGameResult();
-		} catch (InvalidNumberOfRangeException
-			| InvalidNumberFormatException | InvalidNumberOfSizeException exception) {
+		} catch (CustomException.InvalidNumberException exception) {
 			gameStartCycleWithExceptionMessage(exception);
 		}
 	}
 
-	private void gameStartCycleWithExceptionMessage(Exception exception) {
+	private void gameStartCycleWithExceptionMessage(Exception exception) throws CustomException.InvalidNumberException {
 		System.out.println(exception.getMessage());
-		gameStartCycleWithoutReady();
+		showGameResult();
 	}
 
-	public void startGame() {
+	public void startGame() throws CustomException.InvalidNumberException {
 		gameStartCycleDefault();
 	}
 }

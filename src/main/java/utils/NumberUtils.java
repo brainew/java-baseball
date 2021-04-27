@@ -1,46 +1,39 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.OptionalInt;
 import java.util.Scanner;
 
-import exception.CustomException.InvalidNumberFormatException;
-import exception.CustomException.InvalidNumberOfRangeException;
-import exception.CustomException.InvalidNumberOfSizeException;
+import exception.CustomException;
 
 public class NumberUtils {
 	public static Integer getRandomNumber(int limit) {
 		return (int) (Math.random() * limit);
 	}
 
-	public static ArrayList<Integer> readLine(int checkSize) throws InvalidNumberOfRangeException,
-		InvalidNumberFormatException,
-		InvalidNumberOfSizeException {
+	public static ArrayList<Integer> readLine(int checkSize) throws CustomException.InvalidNumberException {
 		Scanner scanner = new Scanner(System.in);
 		String readLineValue = scanner.nextLine();
 
-		ValidUtils.validInputNumbers(readLineValue, checkSize);
+		if (!ValidUtils.validInputNumbers(readLineValue, checkSize)) {
+			throw new CustomException.InvalidNumberException("입력값이 올바르지않습니다.");
+		}
 
-		return convertStringToIntList(readLineValue, checkSize);
+		return convertStringToIntList(readLineValue);
 	}
 
-	private static ArrayList<Integer> convertStringToIntList(String inputValue, int endRange) throws
-		InvalidNumberOfRangeException, InvalidNumberFormatException {
+	private static ArrayList<Integer> convertStringToIntList(String inputValue) {
 		ArrayList<Integer> tempList = new ArrayList<>();
 
 		for (char value : inputValue.toCharArray()) {
 			int resultInt = convertStringToInt(String.valueOf(value));
-			ValidUtils.checkRangeByInputNumber(resultInt, 1, (endRange == 3) ? 9 : 2);
 			tempList.add(resultInt);
 		}
 
 		return tempList;
 	}
 
-	private static int convertStringToInt(String inputValue) throws InvalidNumberFormatException {
-		OptionalInt optional = OptionalInt.of(Integer.parseInt(inputValue));
-		return optional.orElseThrow(() ->
-			new InvalidNumberFormatException("잘못된 형식입니다. 숫자만 입력해주세요."));
+	private static int convertStringToInt(String inputValue) {
+		return Integer.parseInt(inputValue);
 	}
 
 }
